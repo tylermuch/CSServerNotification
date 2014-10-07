@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		252F12EE19E0F61200DB613C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F12ED19E0F61200DB613C /* main.m */; };
 		252F12F119E0F61200DB613C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F12F019E0F61200DB613C /* AppDelegate.m */; };
-		252F12F419E0F61200DB613C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 252F12F319E0F61200DB613C /* ViewController.m */; };
 		252F12F719E0F61200DB613C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 252F12F519E0F61200DB613C /* Main.storyboard */; };
 		252F12F919E0F61200DB613C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 252F12F819E0F61200DB613C /* Images.xcassets */; };
 		252F12FC19E0F61200DB613C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 252F12FA19E0F61200DB613C /* LaunchScreen.xib */; };
@@ -27,6 +26,7 @@
 		25895F0119E3B96400E9E40D /* DDDispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 25895E7F19E3B96400E9E40D /* DDDispatchQueueLogFormatter.m */; };
 		25895F0219E3B96400E9E40D /* DDMultiFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 25895E8119E3B96400E9E40D /* DDMultiFormatter.m */; };
 		25895F0319E3B96400E9E40D /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 25895E8219E3B96400E9E40D /* README.txt */; };
+		25895F3919E3BDE000E9E40D /* ServerTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 25895F3819E3BDE000E9E40D /* ServerTVC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,8 +45,6 @@
 		252F12ED19E0F61200DB613C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		252F12EF19E0F61200DB613C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		252F12F019E0F61200DB613C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		252F12F219E0F61200DB613C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		252F12F319E0F61200DB613C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		252F12F619E0F61200DB613C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		252F12F819E0F61200DB613C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		252F12FB19E0F61200DB613C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -77,6 +75,8 @@
 		25895E8019E3B96400E9E40D /* DDMultiFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDMultiFormatter.h; sourceTree = "<group>"; };
 		25895E8119E3B96400E9E40D /* DDMultiFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDMultiFormatter.m; sourceTree = "<group>"; };
 		25895E8219E3B96400E9E40D /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		25895F3719E3BDE000E9E40D /* ServerTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerTVC.h; sourceTree = "<group>"; };
+		25895F3819E3BDE000E9E40D /* ServerTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerTVC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,12 +121,12 @@
 			children = (
 				252F12EF19E0F61200DB613C /* AppDelegate.h */,
 				252F12F019E0F61200DB613C /* AppDelegate.m */,
-				252F12F219E0F61200DB613C /* ViewController.h */,
-				252F12F319E0F61200DB613C /* ViewController.m */,
 				252F12F519E0F61200DB613C /* Main.storyboard */,
 				252F12F819E0F61200DB613C /* Images.xcassets */,
 				252F12FA19E0F61200DB613C /* LaunchScreen.xib */,
 				252F12EB19E0F61200DB613C /* Supporting Files */,
+				25895F3719E3BDE000E9E40D /* ServerTVC.h */,
+				25895F3819E3BDE000E9E40D /* ServerTVC.m */,
 			);
 			path = CSServerNotification;
 			sourceTree = "<group>";
@@ -326,10 +326,10 @@
 			files = (
 				25895EFD19E3B96400E9E40D /* DDFileLogger.m in Sources */,
 				25895E8619E3B96400E9E40D /* GCDAsyncSocket.m in Sources */,
+				25895F3919E3BDE000E9E40D /* ServerTVC.m in Sources */,
 				25895EFC19E3B96400E9E40D /* DDASLLogger.m in Sources */,
 				25895E8719E3B96400E9E40D /* GCDAsyncUdpSocket.m in Sources */,
 				25895EFB19E3B96400E9E40D /* DDAbstractDatabaseLogger.m in Sources */,
-				252F12F419E0F61200DB613C /* ViewController.m in Sources */,
 				25895F0019E3B96400E9E40D /* DDContextFilterLogFormatter.m in Sources */,
 				252F12F119E0F61200DB613C /* AppDelegate.m in Sources */,
 				252F12EE19E0F61200DB613C /* main.m in Sources */,
