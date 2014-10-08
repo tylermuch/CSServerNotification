@@ -15,19 +15,71 @@ static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 
 @implementation ServerTVC
 {
     GCDAsyncUdpSocket *udpSocket;
+    NSMutableArray *ips;
+    NSMutableArray *servers; // of NSDictionary
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(addButtonPressed:)];
+    self.navigationItem.rightBarButtonItem = addButton;
+    
+    // TODO Load from NSUserDefaults
+    ips = [[NSMutableArray alloc] init];
+    servers = [[NSMutableArray alloc] init];
+    
     if (udpSocket == nil) {
         [self setupSocket];
     }
+    
+    [self loadServerInfo];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)loadServerInfo {
+    for (NSString *ip in ips) {
+        NSData *data = [NSData dataWithBytes:infoRequest length:25];
+        [udpSocket sendData:data toHost:ip port:27015 withTimeout:3 tag:1];
+    }
+}
+
+- (void)addButtonPressed:(UIBarButtonItem *)button {
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertController *addIPController = [UIAlertController alertControllerWithTitle:@"Enter IP Address" message:nil preferredStyle:UIAlertControllerStyleAlert];
     
+    [addIPController addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.placeholder = @"IP Address";
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(alertTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:textField];
+    }];
+    
+    UIAlertAction *okAction = [UIAlertAction
+                               actionWithTitle:@"OK"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction *action)
+                               {
+                                   UITextField *address = addIPController.textFields.firstObject;
+                                   
+                                   [ips addObject:address.text];
+                                   // TODO save to NSUserDefaults
+                                   [self loadServerInfo];
+                                   
+                                   [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextFieldTextDidChangeNotification object:nil];
+                               }];
+    okAction.enabled = NO;
+    [addIPController addAction:cancelAction];
+    [addIPController addAction:okAction];
+    [self.parentViewController presentViewController:addIPController animated:YES completion:nil];
+}
+
+- (void)alertTextFieldDidChange:(NSNotification *)notification {
+    UIAlertController *alertController = (UIAlertController *)self.presentedViewController;
+    if (alertController) {
+        UITextField *address = alertController.textFields.firstObject;
+        UIAlertAction *ok = alertController.actions.lastObject;
+        
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b" options:0 error:nil];
+        ok.enabled = [regex firstMatchInString:address.text options:0 range:NSMakeRange(0, address.text.length)] != nil;
+    }
 }
 
 - (void)setupSocket {
@@ -94,9 +146,36 @@ withFilterContext:(id)filterContext
     s = [NSString stringWithUTF8String:(char *)name];
     m = [NSString stringWithUTF8String:(char *)map];
     
-    NSLog(@"Name: %@", s);
-    NSLog(@"Map: %@", m);
+    [servers addObject:@{
+                        @"name" : s,
+                        @"map"  : m
+                        }];
     
+    [self.tableView reloadData];
+    
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [servers count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    static NSString *reuse = @"servercell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuse];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuse];
+    }
+    
+    NSDictionary *dict = (NSDictionary *)[servers objectAtIndex:indexPath.row];
+    
+    cell.textLabel.text = dict[@"name"];
+    cell.detailTextLabel.text = dict[@"map"];
+    return cell;
 }
 
 @end
