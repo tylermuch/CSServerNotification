@@ -25,6 +25,11 @@ static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithTitle:@"Add" style:UIBarButtonItemStylePlain target:self action:@selector(addButtonPressed:)];
     self.navigationItem.rightBarButtonItem = addButton;
     
+    UIRefreshControl *rc = [[UIRefreshControl alloc] init];
+    rc.attributedTitle = [[NSAttributedString alloc] initWithString:@"Pull to refresh"];
+    [rc addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = rc;
+    
     // TODO Load from NSUserDefaults
     ips = [[NSMutableArray alloc] init];
     servers = [[NSMutableArray alloc] init];
@@ -36,7 +41,13 @@ static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 
     [self loadServerInfo];
 }
 
+- (void)refresh {
+    [self loadServerInfo];
+    [self.refreshControl endRefreshing];
+}
+
 - (void)loadServerInfo {
+    servers = [[NSMutableArray alloc] init]; // reset server array
     for (NSString *ip in ips) {
         NSData *data = [NSData dataWithBytes:infoRequest length:25];
         [udpSocket sendData:data toHost:ip port:27015 withTimeout:3 tag:1];
@@ -115,6 +126,7 @@ static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 
       fromAddress:(NSData *)address
 withFilterContext:(id)filterContext
 {
+    
     unsigned char *bytes = (unsigned char *)data.bytes;
     unsigned char *curr = bytes;
     
