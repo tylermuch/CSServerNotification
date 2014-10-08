@@ -11,6 +11,7 @@
 
 static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 0x75, 0x72, 0x63, 0x65, 0x20, 0x45, 0x6E, 0x67, 0x69,
                                 0x6E, 0x65, 0x20, 0x51, 0x75, 0x65, 0x72, 0x79, 0x00};
+static const uint16_t CS_PORT = 27015;
 
 @implementation ServerTVC
 {
@@ -50,7 +51,7 @@ static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 
     servers = [[NSMutableArray alloc] init]; // reset server array
     for (NSString *ip in ips) {
         NSData *data = [NSData dataWithBytes:infoRequest length:25];
-        [udpSocket sendData:data toHost:ip port:27015 withTimeout:3 tag:1];
+        [udpSocket sendData:data toHost:ip port:CS_PORT withTimeout:3 tag:1];
     }
 }
 
@@ -126,6 +127,29 @@ static unsigned char infoRequest[] = {0xFF, 0xFF, 0xFF, 0xFF, 0x54, 0x53, 0x6F, 
       fromAddress:(NSData *)address
 withFilterContext:(id)filterContext
 {
+    NSLog(@"Received UDP packet");
+    NSString *host = nil;
+    uint16_t port = 0;
+    [GCDAsyncUdpSocket getHost:&host port:&port fromAddress:address];
+    
+    if (port != CS_PORT) {
+        NSLog(@"Invalid port.");
+        return;
+    }
+    
+    BOOL valid = NO;
+    for (NSString *s in ips) {
+        if ([s isEqualToString:host]) {
+            valid = YES;
+            break;
+        }
+    }
+    if (!valid) {
+        NSLog(@"Invalid IP");
+        return;
+    }
+    
+    NSLog(@"Valid IP and port. Parsing packet.");
     
     unsigned char *bytes = (unsigned char *)data.bytes;
     unsigned char *curr = bytes;
@@ -160,7 +184,8 @@ withFilterContext:(id)filterContext
     
     [servers addObject:@{
                         @"name" : s,
-                        @"map"  : m
+                        @"map"  : m,
+                        @"host" : host
                         }];
     
     dispatch_async(dispatch_get_main_queue(), ^{
